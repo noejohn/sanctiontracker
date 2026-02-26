@@ -1,0 +1,753 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concerns - Sanction Tracker</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --dark: #111827;
+            --gray-dark: #374151;
+            --gray: #6b7280;
+            --gray-light: #d1d5db;
+            --gray-extra-light: #f3f4f6;
+            --white: #ffffff;
+            --panel-border: #e5e7eb;
+            --card-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+            --text-muted: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f5f7fb;
+            color: var(--dark);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .nav-section {
+            padding: 16px 0;
+        }
+
+        .nav-section h3 {
+            padding: 0 24px 12px 24px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--gray);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px 48px 48px;
+            max-width: calc(100vw - 260px);
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 16px;
+        }
+
+        .page-title h2 {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .card-description {
+            margin: 6px 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .card-content {
+            padding: 24px 32px 32px;
+        }
+
+        .table-wrapper {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .concern-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+        }
+
+        .concern-table th {
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--gray);
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .concern-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: var(--gray-dark);
+        }
+
+        .concern-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .concern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-progress {
+            background: #a1a1aa;
+            color: #fff;
+        }
+
+        .status-resolved {
+            background: #a855f7;
+            color: #fff;
+        }
+
+        .concern-actions {
+            text-align: right;
+        }
+
+        .concern-actions button {
+            border: 1px solid #d6d8e4;
+            background: #fff;
+            border-radius: 999px;
+            padding: 6px 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .concern-actions button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .empty-row {
+            text-align: center;
+            color: var(--gray);
+            padding: 32px 18px;
+            font-weight: 500;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            z-index: 200;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 28px;
+            width: min(560px, 100%);
+            box-shadow: 0 30px 50px rgba(15, 23, 42, 0.25);
+            position: relative;
+        }
+
+        .modal-card h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-card p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .modal-card .modal-header {
+            margin-bottom: 16px;
+        }
+
+        .modal-card .modal-subtitle {
+            margin-top: 4px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .modal-card .modal-body {
+            border-radius: 12px;
+            padding: 18px 20px;
+            border: 1px solid #e5e7eb;
+            background: #fafbff;
+            margin-bottom: 16px;
+        }
+
+        .modal-card .modal-status-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .modal-card .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .modal-card button {
+            font-family: inherit;
+        }
+
+        .modal-btn {
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, border 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-btn-outline {
+            background: #fff;
+            color: var(--gray-dark);
+            border-color: #d1d5db;
+        }
+
+        .modal-btn-outline:hover {
+            border-color: var(--gray-dark);
+            color: var(--dark);
+            transform: translateY(-1px);
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary), #c084fc);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        @media (max-width: 960px) {
+            .main-content {
+                padding: 24px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .concern-table,
+            .table-wrapper {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header h1,
+            .sidebar-header p,
+            .nav-section h3,
+            .nav-item span {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 16px;
+            }
+
+            .nav-item i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 16px;
+            }
+
+            .card {
+                border-radius: 16px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Admin Panel</h1>
+            <p>Management System</p>
+        </div>
+        <div class="nav-section">
+            <h3>Main</h3>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <i class="material-icons">dashboard</i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <h3>Management</h3>
+            <a href="{% url 'student_management' %}" class="nav-item">
+                <i class="material-icons">people</i>
+                <span>Students</span>
+            </a>
+            <a href="{% url 'sanction_management' %}" class="nav-item">
+                <i class="material-icons">gavel</i>
+                <span>Sanctions</span>
+            </a>
+            <a href="{% url 'servicehours_management' %}" class="nav-item">
+                <i class="material-icons">schedule</i>
+                <span>Service Hours</span>
+            </a>
+            <a href="{% url 'reports_management' %}" class="nav-item">
+                <i class="material-icons">assessment</i>
+                <span>Reports</span>
+            </a>
+            <a href="{% url 'concerns_management' %}" class="nav-item active">
+                <i class="material-icons">warning</i>
+                <span>Concerns</span>
+            </a>
+        </div>
+        <div class="nav-section" style="margin-top: auto;">
+            <a href="{% url 'logout' %}" class="nav-item">
+                <i class="material-icons">logout</i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Student Concerns</h2>
+                <p>Review and address concerns submitted by students.</p>
+            </div>
+        </div>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                {% if "logged out" not in message|lower and "welcome" not in message|lower %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="card">
+            <div class="card-header">
+                <p class="card-title">Inbox</p>
+                <p class="card-description">Review and address concerns submitted by students.</p>
+            </div>
+            <div class="card-content">
+                <div class="table-wrapper">
+                    <table class="concern-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Date Submitted</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for concern in concerns %}
+                            <tr>
+                                <td>{{ concern.student_name }}</td>
+                                <td>{{ concern.subject }}</td>
+                                <td>{{ concern.date_submitted }}</td>
+                                <td>
+                                <span id="concern-status-{{ concern.id }}" class="status-pill status-{{ concern.status_class }}">{{ concern.status_label }}</span>
+                                </td>
+                                <td class="concern-actions">
+                                    <button
+                                        type="button"
+                                        class="view-concern-btn"
+                                        data-subject="{{ concern.subject }}"
+                                        data-student="{{ concern.student_name }}"
+                                        data-student-id="{{ concern.student_id }}"
+                                        data-concern-id="{{ concern.id }}"
+                                        data-date="{{ concern.date_submitted }}"
+                                        data-message="{{ concern.message|default:'No additional context provided.'|escape }}"
+                                        data-status-label="{{ concern.status_label }}"
+                                        data-status-class="{{ concern.status_class }}"
+                                        data-status-target="concern-status-{{ concern.id }}"
+                                    >
+                                        <i class="material-icons">visibility</i>
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="empty-row">No concerns available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-overlay" id="concern-modal">
+            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="concern-modal-subject">
+                <button type="button" class="close-modal" id="concern-modal-close" aria-label="Close concern details">&times;</button>
+                <div class="modal-header">
+                    <h3 id="concern-modal-subject">Concern Details</h3>
+                    <p class="modal-subtitle">From: <strong id="concern-modal-student">Student</strong> on <span id="concern-modal-date">Date</span></p>
+                </div>
+                <div class="modal-body">
+                    <p id="concern-modal-message">Detailed concern description will appear here.</p>
+                </div>
+                <div class="modal-status-wrapper">
+                    <span>Status:</span>
+                    <span id="concern-modal-status" class="status-pill status-new">New</span>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="modal-mark-progress" class="modal-btn modal-btn-outline">
+                        <i class="material-icons">timer</i>
+                        Mark as In Progress
+                    </button>
+                    <button type="button" id="modal-mark-resolved" class="modal-btn modal-btn-outline">
+                        <i class="material-icons">check</i>
+                        Mark as Resolved
+                    </button>
+                    <button type="button" id="modal-close-btn" class="modal-btn modal-btn-primary">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const concernStatusUrlTemplate = "{% url 'concern_status' concern_id=0 %}";
+            const modalOverlay = document.getElementById('concern-modal');
+            const modalSubject = document.getElementById('concern-modal-subject');
+            const modalStudent = document.getElementById('concern-modal-student');
+            const modalDate = document.getElementById('concern-modal-date');
+            const modalMessage = document.getElementById('concern-modal-message');
+            const modalStatus = document.getElementById('concern-modal-status');
+            const btnProgress = document.getElementById('modal-mark-progress');
+            const btnResolved = document.getElementById('modal-mark-resolved');
+            const btnClose = document.getElementById('modal-close-btn');
+            const btnModalClose = document.getElementById('concern-modal-close');
+            const viewButtons = document.querySelectorAll('.view-concern-btn');
+            let activeViewButton = null;
+            let activeStatusElement = null;
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let cookie of cookies) {
+                        cookie = cookie.trim();
+                        if (cookie.startsWith(name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            function updateConcernStatus(statusClass, statusLabel) {
+                var normalizedLabel = statusLabel || 'Unknown';
+                var normalizedClass = statusClass || 'new';
+                if (modalStatus) {
+                    modalStatus.textContent = normalizedLabel;
+                    modalStatus.className = 'status-pill status-' + normalizedClass;
+                }
+                if (activeStatusElement) {
+                    activeStatusElement.textContent = normalizedLabel;
+                    activeStatusElement.className = 'status-pill status-' + normalizedClass;
+                }
+                if (activeViewButton) {
+                    activeViewButton.dataset.statusClass = normalizedClass;
+                    activeViewButton.dataset.statusLabel = normalizedLabel;
+                }
+            }
+
+            function persistConcernStatus(statusKey) {
+                if (!activeViewButton) {
+                    return Promise.reject(new Error('Open a concern before updating its status.'));
+                }
+                const concernId = activeViewButton.dataset.concernId;
+                if (!concernId) {
+                    return Promise.reject(new Error('Concern identifier is missing.'));
+                }
+                const url = concernStatusUrlTemplate.replace('/0/', `/${concernId}/`);
+                const csrftoken = getCookie('csrftoken');
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken || '',
+                    },
+                    body: new URLSearchParams({ status: statusKey }),
+                }).then(response =>
+                    response.json().then(data => {
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Unable to update concern status.');
+                        }
+                        const label = data.status_label || statusKey;
+                        const cssClass = data.status_class || statusKey;
+                        updateConcernStatus(cssClass, label);
+                        return data;
+                    })
+                );
+            }
+
+            function openModal(button) {
+                if (!button) {
+                    return;
+                }
+                activeViewButton = button;
+                var targetId = button.dataset.statusTarget;
+                activeStatusElement = targetId ? document.getElementById(targetId) : null;
+                if (modalSubject) {
+                    modalSubject.textContent = button.dataset.subject || 'Concern Details';
+                }
+                if (modalStudent) {
+                    var studentName = button.dataset.student || 'Student';
+                    var studentId = button.dataset.studentId || '';
+                    modalStudent.textContent = studentId ? studentName + ' (' + studentId + ')' : studentName;
+                }
+                if (modalDate) {
+                    modalDate.textContent = button.dataset.date || '';
+                }
+                if (modalMessage) {
+                    modalMessage.textContent = button.dataset.message || 'No additional context provided.';
+                }
+                updateConcernStatus(button.dataset.statusClass, button.dataset.statusLabel);
+                if (modalOverlay) {
+                    modalOverlay.classList.add('active');
+                }
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal() {
+                if (modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                }
+                document.body.classList.remove('modal-open');
+            }
+
+            for (var i = 0; i < viewButtons.length; i++) {
+                (function (button) {
+                    button.addEventListener('click', function () {
+                        openModal(button);
+                    });
+                })(viewButtons[i]);
+            }
+
+            if (btnProgress) {
+                btnProgress.addEventListener('click', function () {
+                    persistConcernStatus('progress').catch(error => alert(error.message));
+                });
+            }
+            if (btnResolved) {
+                btnResolved.addEventListener('click', function () {
+                    persistConcernStatus('resolved').catch(error => alert(error.message));
+                });
+            }
+            if (btnClose) {
+                btnClose.addEventListener('click', closeModal);
+            }
+            if (btnModalClose) {
+                btnModalClose.addEventListener('click', closeModal);
+            }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function (event) {
+                    if (event.target === modalOverlay) {
+                        closeModal();
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

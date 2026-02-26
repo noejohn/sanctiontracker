@@ -1,0 +1,191 @@
+{% extends "Student/base.html" %}
+
+{% block title %}My Records - Sanction Tracker{% endblock %}
+
+{% block page_title %}My Records{% endblock %}
+{% block page_subtitle %}A permanent, read-only log of your sanction and service history.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .records-page {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .records-heading {
+        background: var(--white);
+        border-radius: 18px;
+        padding: 22px 28px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .records-heading h3 {
+        margin: 0;
+        font-size: 24px;
+        color: var(--dark);
+    }
+
+    .records-heading p {
+        margin: 0;
+        color: var(--gray);
+    }
+
+    .print-btn {
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        padding: 8px 18px;
+        font-weight: 600;
+        background: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gray-dark);
+        transition: background 0.2s ease;
+    }
+
+    .print-btn:hover {
+        background: #f8f9fb;
+    }
+
+    .records-card {
+        background: var(--white);
+        border-radius: 18px;
+        padding: 24px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .records-card h4 {
+        font-size: 20px;
+        margin-bottom: 4px;
+        color: var(--dark);
+    }
+
+    .records-card p {
+        margin: 0 0 14px;
+        color: var(--gray);
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .history-table thead th {
+        text-align: left;
+        padding: 10px 12px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+    }
+
+    .history-table tbody td {
+        padding: 12px;
+        font-size: 14px;
+        color: var(--dark);
+        border-top: 1px solid #f1f3f5;
+    }
+
+    .history-table tbody tr:first-child td {
+        border-top: 0;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: rgba(239, 68, 68, 0.12);
+        color: #ef4444;
+    }
+
+    .status-completed {
+        background: rgba(79, 70, 229, 0.15);
+        color: var(--secondary);
+    }
+    @media (max-width: 768px) {
+        .records-heading {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_body %}
+<div class="records-page">
+    <div class="records-heading">
+        <div>
+            <h3>My Records</h3>
+            <p>A permanent, read-only log of your sanction and service history.</p>
+        </div>
+        <button class="print-btn">
+            <i class="material-icons">print</i>
+            Print Records
+        </button>
+    </div>
+    <div class="records-card">
+        <h4>Sanction History</h4>
+        <p>A log of every sanction assigned to you.</p>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Violation</th>
+                    <th>Date Issued</th>
+                    <th>Hours Required</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sanction in sanctions %}
+                <tr>
+                    <td>{{ sanction.violation }}</td>
+                    <td>{{ sanction.issued }}</td>
+                    <td>{{ sanction.hours_required }}</td>
+                    <td><span class="status-pill {{ sanction.status_class }}">{{ sanction.status_label }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="records-card">
+        <h4>Community Service History</h4>
+        <p>Only approved hours are shown here.</p>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date Completed</th>
+                    <th>Hours</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in community_hours %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.hours }}</td>
+                    <td>{{ entry.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Sanction Tracker</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #7c3aed;
+            --dark: #111827;
+            --gray-dark: #374151;
+            --gray: #6b7280;
+            --gray-light: #9ca3af;
+            --gray-extra-light: #f3f4f6;
+            --white: #fefefe;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--gray-extra-light);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .nav-section {
+            padding: 16px 0;
+            
+        }
+
+        .nav-section h3 {
+            padding: 0 24px 12px 24px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--gray);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 24px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .page-title h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: var(--white);
+            color: var(--gray-dark);
+            border: 1px solid #d1d5db;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: var(--gray-extra-light);
+            border-color: var(--gray-light);
+        }
+
+        /* Welcome banner */
+        .welcome-banner {
+            background: linear-gradient(90deg, rgba(79,70,229,0.1), rgba(124,58,237,0.06));
+            border: 1px solid rgba(79,70,229,0.12);
+            color: var(--dark);
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 6px 18px rgba(79,70,229,0.06);
+        }
+
+        .welcome-banner .icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .welcome-banner .text {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            display: grid;
+            gap: 30px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .stat-period {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .activity-placeholder {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .activity-placeholder i {
+            font-size: 48px;
+            color: var(--gray-light);
+            margin-bottom: 16px;
+        }
+
+        .activity-placeholder p {
+            color: var(--gray);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-header h1,
+            .sidebar-header p,
+            .nav-section h3,
+            .nav-item span {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 16px;
+            }
+            
+            .nav-item i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Icon Styles */
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Admin Panel</h1>
+            <p>Sanction Tracker System</p>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Main</h3>
+            <a href="#" class="nav-item active">
+                <i class="material-icons">dashboard</i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        
+
+    <!-- Sidebar  Management-->
+        <div class="nav-section">
+            <h3>Management</h3>
+            <a href="{% url 'student_management' %}" class="nav-item">
+                <i class="material-icons">people</i>
+                <span>Students</span>
+            </a>
+            <a href="{% url 'sanction_management' %}" class="nav-item">
+                <i class="material-icons">gavel</i>
+                <span>Sanctions</span>
+            </a>
+            <a href="{% url 'servicehours_management' %}" class="nav-item">
+                <i class="material-icons">schedule</i>
+                <span>Service Hours</span>
+            </a>
+            <a href="{% url 'reports_management' %}" class="nav-item">
+                <i class="material-icons">assessment</i>
+                <span>Reports</span>
+            </a>
+            <a href="{% url 'concerns_management' %}" class="nav-item">
+                <i class="material-icons">warning</i>
+                <span>Concerns</span>
+            </a>
+        </div>
+        
+            <!-- This Correct Logout -->
+        <div class="nav-section" style="margin-top: auto;">
+            <a href="{% url 'logout' %}" class="nav-item">
+                <i class="material-icons">logout</i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Sanction Tracker</h2>
+                <p>Dashboard</p>
+            </div>
+            
+        </div>
+
+        <!-- Welcome Banner (only show welcome messages) -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if "welcome" in message|lower %}
+                <div class="welcome-banner">
+                    <div class="icon">A</div>
+                    <div class="text">{{ message }}</div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Students</div>
+                    <div class="stat-value">{{ total_students }}</div>
+                    <div class="stat-change">{{ students_change }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">Students with Active Sanctions</div>
+                    <div class="stat-value">{{ active_sanctions }}</div>
+                    <div class="stat-change">{{ sanctions_change }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">Completed Sanctions</div>
+                    <div class="stat-value">{{ completed_sanctions }}</div>
+                    <div class="stat-period">{{ completed_period }}</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="section-title">Recent Activity</div>
+                
+                {% if recent_activities %}
+                    <!-- Activity list would go here -->
+                    <div class="activity-list">
+                        {% for activity in recent_activities %}
+                            <div class="activity-item">
+                                <!-- Activity content -->
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="activity-placeholder">
+                        <i class="material-icons">inbox</i>
+                        <p>No recent activity to display.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 Sanction Tracker System. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Add active class to clicked nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('active')) {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Logout confirmation
+        const logoutLink = document.querySelector('a[href*="logout"]');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to logout?')) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

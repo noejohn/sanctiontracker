@@ -1,0 +1,141 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Help Center - Sanction Tracker{% endblock %}
+
+{% block page_title %}Help Center & Support{% endblock %}
+{% block page_subtitle %}Report an issue or ask a question about your sanctions.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .help-page-content {
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+    }
+
+    .help-card-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .help-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 26px 30px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        max-width: 640px;
+        width: 100%;
+    }
+
+    .help-card h3 {
+        margin: 0 0 6px;
+        font-size: 22px;
+    }
+
+    .help-card p {
+        margin: 0 0 18px;
+        color: var(--gray);
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .form-field label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .form-field select,
+    .form-field textarea,
+    .form-field input {
+        border-radius: 12px;
+        border: 1px solid #cbd5f5;
+        padding: 14px;
+        font-size: 14px;
+        font-family: inherit;
+        background: #f8f9ff;
+    }
+
+    .form-field input {
+        appearance: none;
+    }
+
+    .form-field textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: var(--secondary);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        display: inline-flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .submit-btn .material-icons {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        .help-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_body %}
+<div class="help-page-content">
+    <div class="help-card-wrapper">
+        <div class="help-card">
+    <h3>Submit a Concern</h3>
+    <p>Use this form to report any discrepancies or issues with your account or sanctions.</p>
+    <form method="POST" action="{% url 'student_help_center' %}">
+        {% csrf_token %}
+        <div class="form-field">
+            <label for="concern-topic">Subject of Concern</label>
+            <select id="concern-topic" name="subject" required>
+                <option disabled selected>Select a reason...</option>
+                {% for topic in concern_topics %}
+                <option value="{{ topic }}">{{ topic }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-field">
+            <label for="concern-description">Detailed Description</label>
+            <textarea id="concern-description" name="message" placeholder="Please provide as much detail as possible, including dates, sanction names, or any other relevant information." required></textarea>
+        </div>
+        <button class="submit-btn" type="submit">
+            <i class="material-icons">send</i>
+            Submit Concern
+        </button>
+    </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

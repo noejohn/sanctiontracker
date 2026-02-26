@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - Sanction Tracker</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #7c3aed;
+            --dark: #111827;
+            --gray-dark: #374151;
+            --gray: #6b7280;
+            --gray-light: #9ca3af;
+            --gray-extra-light: #f3f4f6;
+            --white: #ffffff;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--gray-extra-light);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .nav-section {
+            padding: 16px 0;
+        }
+
+        .nav-section h3 {
+            padding: 0 24px 12px 24px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--gray);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 24px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .page-title h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: var(--white);
+            color: var(--gray-dark);
+            border: 1px solid #d1d5db;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: var(--gray-extra-light);
+            border-color: var(--gray-light);
+        }
+
+        /* Student Management Content */
+        .student-management-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: var(--gray-extra-light);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: var(--white);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        /* Students Table */
+        .students-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .students-table th {
+            background: var(--gray-extra-light);
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .students-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            color: var(--gray-dark);
+            font-size: 14px;
+        }
+
+        .students-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .students-table tr:hover {
+            background: var(--gray-extra-light);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-with-sanction {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .status-cleared {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-view {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-view:hover {
+            background: #c7d2fe;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #4338ca;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-light);
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-header h1,
+            .sidebar-header p,
+            .nav-section h3,
+            .nav-item span {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 16px;
+            }
+            
+            .nav-item i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 16px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+        }
+    </style>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Admin Panel</h1>
+            <p>Sanction Tracker System</p>
+            
+        </div>
+        
+        <div class="nav-section">
+            <h3>Main</h3>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                <i class="material-icons">dashboard</i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Management</h3>
+            <a href="{% url 'student_management' %}" class="nav-item active">
+                <i class="material-icons">people</i>
+                <span>Students</span>
+            </a>
+            <a href="{% url 'sanction_management' %}" class="nav-item">
+                <i class="material-icons">gavel</i>
+                <span>Sanctions</span>
+            </a>
+            <a href="{% url 'servicehours_management' %}" class="nav-item">
+                <i class="material-icons">schedule</i>
+                <span>Service Hours</span>
+            </a>
+            <a href="{% url 'reports_management' %}" class="nav-item">
+                <i class="material-icons">assessment</i>
+                <span>Reports</span>
+            </a>
+            <a href="{% url 'concerns_management' %}" class="nav-item">
+                <i class="material-icons">warning</i>
+                <span>Concerns</span>
+            </a>
+        </div>
+        
+        <div class="nav-section" style="margin-top: auto;">
+            <a href="{% url 'logout' %}" class="nav-item">
+                <i class="material-icons">logout</i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Sanction Tracker</h2>
+                <p>Student Management</p>
+            </div>
+            
+        </div>
+
+        {% if messages %}
+        <div class="messages" style="margin-bottom: 20px;">
+            {% for message in messages %}
+            <div style="padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 10px; {% if 'error' in message.tags %}background:#fee2e2;color:#dc2626;border:1px solid #fecaca;{% elif 'success' in message.tags %}background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;{% elif 'warning' in message.tags %}background:#fef3c7;color:#92400e;border:1px solid #fcd34d;{% else %}background:#dbeafe;color:#1e3a8a;border:1px solid #bfdbfe;{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Student Management Content -->
+        <div class="student-management-content">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form method="GET" action="{% url 'student_management' %}" id="student-search-form">
+                    <div class="search-bar">
+                        <i class="material-icons">search</i>
+                        <input type="text" 
+                               name="search" 
+                               placeholder="Search by name or ID..."
+                               value="{{ search_query }}">
+                    </div>
+                </form>
+            </div>
+            <p style="margin: -10px 0 20px 0; color: var(--gray); font-size: 13px;">
+                Showing {{ student_count }} student{{ student_count|pluralize }}
+            </p>
+
+            <!-- Students Table -->
+            {% if students %}
+            <div class="students-table-container">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td><strong>{{ student.id }}</strong></td>
+                            <td>{{ student.get_full_name|default:student.username }}</td>
+                            <td>{{ student.email }}</td>
+                            <td>
+                                {% if student.is_active %}
+                                <span class="status-badge status-cleared">Active</span>
+                                {% else %}
+                                <span class="status-badge status-with-sanction">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn btn-view" data-student-url="{% url 'student_detail' student.id %}">
+                                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">visibility</i>
+                                        View
+                                    </button>
+                                    <a href="{% url 'sanction_management' %}?student_id={{ student.id }}" class="btn btn-add" role="button">
+                                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">add</i>
+                                        Add Sanction
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="material-icons">search_off</i>
+                <p>No students found. Try a different search term.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Sanction Tracker System. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Add active class to clicked nav items (safe)
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('active')) {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Logout confirmation (works with link)
+        const logoutLink = document.querySelector('a[href*="logout"]');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to logout?')) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // Search functionality (debounced)
+        (function() {
+            let searchTimeout;
+            const searchInput = document.querySelector('input[name="search"]');
+            const searchForm = document.getElementById('student-search-form');
+            if (searchInput && searchForm) {
+                searchInput.addEventListener('input', function(e) {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        searchForm.submit();
+                    }, 500); // Submit after 500ms of no typing
+                });
+            }
+        })();
+
+        // Ensure the view buttons trigger navigation even if something else captures the click
+        document.querySelectorAll('.action-buttons .btn-view').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.dataset.studentUrl;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

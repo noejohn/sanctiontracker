@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanction — Student Overview</title>
+    <style>
+        :root {
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e5e7eb;
+            --sidebar-text: #1f2937;
+            --sidebar-muted: #6b7280;
+            --sidebar-active-bg: #eef2ff;
+            --sidebar-active-text: #4338ca;
+            --accent: #4f46e5;
+            --card-bg: #ffffff;
+            --card-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
+            --pill-green: #dcfce7;
+            --pill-green-text: #166534;
+            --pill-muted: #f3f4ff;
+            --text-dark: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(180deg, #eef1ff 0%, #e2e4ff 100%);
+            color: var(--text-dark);
+        }
+
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            color: var(--sidebar-text);
+            position: fixed;
+            inset: 0 auto auto 0;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        .sidebar h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .sidebar p {
+            margin: 4px 0 24px;
+            color: var(--sidebar-muted);
+            font-size: 13px;
+        }
+
+        .sidebar-section {
+            margin-top: 16px;
+        }
+
+        .sidebar-section:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-label {
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--sidebar-muted);
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--sidebar-text);
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar a.active {
+            background: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .sidebar a:hover {
+            background: #f3f4ff;
+        }
+
+        .sidebar i {
+            font-size: 20px;
+        }
+
+        .logout-link {
+            margin-top: 28px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .workspace {
+            margin-left: 250px;
+            flex: 1;
+            padding: 32px 44px 40px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            margin: 6px 0 0;
+            color: var(--text-muted);
+        }
+
+        .back-btn {
+            border: none;
+            background: #ffffff;
+            padding: 10px 20px;
+            border-radius: 999px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            margin-bottom: 24px;
+        }
+
+        .panel h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .panel small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-muted);
+        }
+
+        .info-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #111827;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-size: 12px;
+        }
+
+        .pill.active {
+            background: var(--pill-green);
+            color: var(--pill-green-text);
+            border: 1px solid #bbf7d0;
+        }
+
+        .pill.cleared {
+            background: var(--pill-muted);
+            color: var(--text-muted);
+            border: 1px solid #dbeafe;
+        }
+
+        .sanctions-card {
+            box-shadow: var(--card-shadow);
+        }
+
+        .sanctions-card h3 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .sanctions-card p {
+            margin: 8px 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .sanctions-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sanction-item {
+            padding: 16px 20px;
+            border-radius: 18px;
+            background: #f8f7ff;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .sanction-item strong {
+            display: block;
+            font-size: 16px;
+            color: #111827;
+        }
+
+        .sanction-item span {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            margin-top: 20px;
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 900px) {
+            .workspace {
+                margin-left: 0;
+                padding: 32px 24px;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .sidebar nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <aside class="sidebar">
+        <div>
+            <h1>Admin Panel</h1>
+            <p>Sanction Tracker</p>
+        </div>
+        <div class="sidebar-section">
+            <p class="section-label">Main</p>
+            <nav>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    Dashboard
+                </a>
+            </nav>
+        </div>
+        <div class="sidebar-section">
+            <p class="section-label">Management</p>
+            <nav>
+                <a href="{% url 'student_management' %}" class="active">
+                    <i class="material-icons">people</i>
+                    Students
+                </a>
+                <a href="{% url 'sanction_management' %}">
+                    <i class="material-icons">gavel</i>
+                    Sanctions
+                </a>
+                <a href="{% url 'servicehours_management' %}">
+                    <i class="material-icons">schedule</i>
+                    Service Hours
+                </a>
+                <a href="{% url 'reports_management' %}">
+                    <i class="material-icons">assessment</i>
+                    Reports
+                </a>
+                <a href="{% url 'concerns_management' %}">
+                    <i class="material-icons">warning</i>
+                    Concerns
+                </a>
+            </nav>
+        </div>
+        <a href="{% url 'logout' %}" class="logout-link">
+            <i class="material-icons">logout</i>
+            Logout
+        </a>
+    </aside>
+    <main class="workspace">
+        <div class="hero">
+            <div>
+                <h1>Sanction</h1>
+                <p>View student sanctions in detail.</p>
+            </div>
+            <a href="{% url 'student_management' %}" class="back-btn">
+                <i class="material-icons">arrow_back</i>
+                Back to Students
+            </a>
+        </div>
+
+        <section class="panel">
+            <div class="profile-header">
+                <div>
+                    <h2>{{ student.display_name }}</h2>
+                    <small>Student ID: {{ student.identifier }}</small>
+                </div>
+                <span class="pill {% if has_active %}active{% else %}cleared{% endif %}">
+                    {% if has_active %}
+                        With Sanction
+                    {% else %}
+                        Cleared
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-grid">
+                <div>
+                    <span class="label">Email:</span>
+                    {{ student.email }}
+                </div>
+                <div>
+                    <span class="label">Department:</span>
+                    {{ student.department|default:"Unassigned" }}
+                </div>
+                <div>
+                    <span class="label">Status:</span>
+                    {{ sanction_status }}
+                </div>
+            </div>
+        </section>
+
+        <section class="panel sanctions-card">
+            <div>
+                <h3>Sanctions</h3>
+                <p>All sanctions assigned to this student. Use the archive icon to signal a removal.</p>
+            </div>
+            {% if sanctions %}
+            <div class="sanctions-list">
+                {% for sanction in sanctions %}
+                <article class="sanction-item">
+                    <div class="details">
+                        <strong>{{ sanction.violation }}</strong>
+                        <span>Required Hours: {{ sanction.required_hours }}</span>
+                        <span>Completed: {{ sanction.completed_hours }}</span>
+                    </div>
+                    <div class="meta">
+                        <span>{{ sanction.date_issued }} — {{ sanction.due_date }}</span>
+                        <span class="pill {% if sanction.status == 'completed' %}cleared{% else %}active{% endif %}">
+                            {{ sanction.status_label }}
+                        </span>
+                        <i class="material-icons" style="color: var(--text-muted); cursor: pointer;">archive</i>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No sanctions have been logged for this student yet.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

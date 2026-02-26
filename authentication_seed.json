@@ -1,0 +1,131 @@
+[
+{
+  "model": "authentication.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$fAzkIBBwumxGtxn0qhE10x$TRdznJctAsqu9SrZWk0buZQ3zl1THSdcT0EUGjXKc1s=",
+    "last_login": "2026-02-25T09:34:18.493Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "System",
+    "last_name": "Administrator",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-02T12:45:01.142Z",
+    "role": "admin",
+    "email": "admin@podoffice.edu",
+    "status": "active",
+    "student_code": null,
+    "department": "",
+    "course_year": "",
+    "created_at": "2026-02-14T02:29:52.580Z",
+    "updated_at": "2026-02-14T02:29:52.590Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$nibieRZAF4rig1fttiuOch$GrAW3e3me9h/6kJQKsnRfRBrEGIpndrBNV7tZryXl28=",
+    "last_login": "2026-02-25T09:34:11.761Z",
+    "is_superuser": false,
+    "username": "student",
+    "first_name": "Sample",
+    "last_name": "Student",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-24T13:23:22.011Z",
+    "role": "student",
+    "email": "student@podoffice.edu",
+    "status": "active",
+    "student_code": null,
+    "department": "",
+    "course_year": "",
+    "created_at": "2026-02-24T13:23:22.352Z",
+    "updated_at": "2026-02-24T13:23:22.352Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Vk72qBFYSAVopKuUZpJMnH$9ftp5Wu6fyhz3dXnxokvANzIntlXtr2cpOpdyzlx9DQ=",
+    "last_login": "2026-02-25T08:52:20.023Z",
+    "is_superuser": true,
+    "username": "admin123",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-25T08:51:56.131Z",
+    "role": "admin",
+    "email": "admin@gmail.com",
+    "status": "active",
+    "student_code": null,
+    "department": "",
+    "course_year": "",
+    "created_at": "2026-02-25T08:51:56.261Z",
+    "updated_at": "2026-02-25T08:51:56.261Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$emlZyReTRcWJAfVOKCDkAv$2Ot08FzBnUD9/6ZV9Kg+ic/Tli9BJbuO1eRy5hrDPpo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "1121",
+    "first_name": "NOE",
+    "last_name": "JOHN RUBIO",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-25T09:33:58.449Z",
+    "role": "student",
+    "email": "NOEJOHNRUBIO@gmail.com",
+    "status": "active",
+    "student_code": "1121",
+    "department": "College of Engineering and Information Technology",
+    "course_year": "BSIT 1",
+    "created_at": "2026-02-25T09:33:58.590Z",
+    "updated_at": "2026-02-25T09:33:58.590Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.sanctiontype",
+  "pk": 1,
+  "fields": {
+    "description": "VANDALISM",
+    "hours": 1,
+    "gravity": "Minor",
+    "created_at": "2026-02-25T09:33:37.542Z",
+    "updated_at": "2026-02-25T09:33:37.542Z"
+  }
+},
+{
+  "model": "authentication.sanction",
+  "pk": 1,
+  "fields": {
+    "student": 6,
+    "sanction_type": 1,
+    "violation_snapshot": "VANDALISM",
+    "department": "College of Engineering and Information Technology",
+    "required_hours": 1,
+    "completed_hours": 0,
+    "status": "active",
+    "date_issued": "2026-02-25",
+    "due_date": "2026-02-25",
+    "note": "",
+    "created_at": "2026-02-25T09:33:58.594Z",
+    "updated_at": "2026-02-25T09:33:58.594Z"
+  }
+}
+]

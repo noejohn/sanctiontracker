@@ -1,0 +1,329 @@
+{% extends "Student/base.html" %}
+
+{% block title %}My Service Hours - Sanction Tracker{% endblock %}
+
+{% block page_title %}My Service Hours{% endblock %}
+{% block page_subtitle %}Track your progress and submit your completed service hours for validation.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .service-overview {
+        border-radius: 16px;
+        padding: 28px;
+        background: #f4f5fb;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .progress-head h3 {
+        margin: 0;
+        font-size: 20px;
+        color: var(--dark);
+    }
+
+    .progress-totals {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+    }
+
+    .progress-totals div {
+        text-align: center;
+    }
+
+    .progress-totals span {
+        display: block;
+        text-transform: uppercase;
+        font-size: 12px;
+        color: var(--gray-dark);
+        font-weight: 500;
+    }
+
+    .progress-bar {
+        background: #ebedf4;
+        border-radius: 999px;
+        height: 12px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--secondary), var(--primary));
+        transition: width 0.3s ease;
+    }
+
+    .progress-note {
+        font-size: 13px;
+        color: var(--gray);
+        text-align: center;
+    }
+
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .card-panel {
+        background: var(--white);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-panel h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        color: var(--dark);
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 16px;
+    }
+
+    .form-field label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        padding: 10px 14px;
+        font-size: 14px;
+        font-family: inherit;
+    }
+
+    .form-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .file-field {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px dashed #c7c7d4;
+        color: var(--gray-dark);
+        background: #fbfbff;
+        overflow: hidden;
+    }
+
+    .file-field input[type="file"] {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: var(--secondary);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 10px 12px;
+        font-size: 14px;
+        color: var(--gray-dark);
+    }
+
+    .history-table th {
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+    }
+
+    .history-table tbody tr {
+        border-top: 1px solid #f1f3f5;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background: rgba(199, 199, 199, 0.2);
+        color: #6b7280;
+    }
+
+    .status-rejected {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+    }
+
+    .status-approved {
+        background: rgba(79, 70, 229, 0.15);
+        color: var(--secondary);
+    }
+
+    @media (max-width: 768px) {
+        .service-overview {
+            padding: 18px;
+        }
+
+        .service-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const proofInput = document.getElementById('proof-file');
+        const proofLabel = document.getElementById('proof-file-label');
+        if (!proofInput || !proofLabel) return;
+        proofInput.addEventListener('change', function () {
+            const fileName = this.files?.[0]?.name;
+            proofLabel.textContent = fileName || 'No file chosen';
+        });
+    });
+</script>
+{% endblock %}
+
+{% block page_body %}
+<div class="service-overview">
+    <div class="progress-head">
+        <h3>Overall Progress</h3>
+        <div class="progress-totals">
+            <div>
+                <span>Required</span>
+                <strong>{{ required_hours }} hrs</strong>
+            </div>
+            <div>
+                <span>Completed</span>
+                <strong>{{ completed_hours }} hrs</strong>
+            </div>
+            <div>
+                <span>Remaining</span>
+                <strong>{{ remaining_hours }} hrs</strong>
+            </div>
+        </div>
+    </div>
+    <div class="progress-bar">
+        <span class="progress-bar-fill" style="width: {{ progress_percentage }}%;"></span>
+    </div>
+    <p class="progress-note">You have completed {{ progress_percentage }}% of your required hours.</p>
+</div>
+
+<div class="service-grid">
+    <div class="card-panel">
+        <h3>Log Service Hours</h3>
+        <p>Submit your completed hours for validation.</p>
+        <form method="POST" action="{% url 'student_service_hours' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="sanction">Sanction</label>
+                <select id="sanction" name="sanction" required>
+                    <option>Select a sanction to log hours for</option>
+                    {% for sanction in sanction_options %}
+                    <option value="{{ sanction.id }}">{{ sanction.title }}</option>
+                    {% empty %}
+                    <option disabled>No sanctions available</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-field">
+                <label>Date</label>
+                <input type="date" name="date" required />
+            </div>
+            <div class="form-field">
+                <label>Hours</label>
+                <input type="number" name="hours" placeholder="e.g., 2" min="0.25" step="0.25" required />
+            </div>
+            <div class="form-field">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe the work you performed..." required></textarea>
+            </div>
+            <div class="form-field">
+                <label>Proof of Completion</label>
+                <div class="file-field">
+                    <span id="proof-file-label">No file chosen</span>
+                    <input type="file" name="proof" id="proof-file" accept="image/*,application/pdf" />
+                </div>
+                <small>Upload a photo or a scanned document as proof.</small>
+            </div>
+            <button class="submit-btn" type="submit">Submit for Validation</button>
+        </form>
+    </div>
+    <div class="card-panel">
+        <h3>Submission History</h3>
+        <p>A log of all your submissions.</p>
+        <table class="history-table">
+            <thead>
+                        <tr>
+                    <th>Date</th>
+                    <th>Hours</th>
+                    <th>Description</th>
+                    <th>Proof</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in submissions %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.hours }}</td>
+                    <td>{{ entry.description }}</td>
+                    <td>
+                        {% if entry.proof_url %}
+                        <a href="{{ entry.proof_url }}" target="_blank">View proof</a>
+                        {% else %}
+                        <span style="color: var(--gray);">No proof</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="status-pill {{ entry.status_class }}">{{ entry.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

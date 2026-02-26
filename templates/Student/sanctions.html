@@ -1,0 +1,34 @@
+{% extends "Student/base.html" %}
+
+{% block title %}My Sanctions - Sanction Tracker{% endblock %}
+
+{% block page_title %}My Sanctions{% endblock %}
+{% block page_subtitle %}A detailed list of all sanctions assigned to you.{% endblock %}
+
+{% block page_body %}
+<section class="sanctions-grid">
+    {% for sanction in sanctions %}
+    <article class="sanction-card">
+        <div class="card-row">
+            <div>
+                <h3>{{ sanction.title }}</h3>
+                <p class="issued-text">Issued: {{ sanction.issued }}</p>
+            </div>
+            <span class="status-badge {{ sanction.status_class }}">{{ sanction.status_label }}</span>
+        </div>
+        <div class="progress-row">
+            <p>Service Hours Progress</p>
+            <div class="progress-track">
+                <span class="progress-fill" style="width: {{ sanction.progress_percentage }}%;"></span>
+            </div>
+            <p class="progress-meta">{{ sanction.completed_hours }} / {{ sanction.required_hours }} hrs</p>
+        </div>
+        {% if sanction.note %}
+        <p class="sanction-note">{{ sanction.note }}</p>
+        {% endif %}
+    </article>
+    {% empty %}
+    <p class="activity-meta">You currently have no sanctions.</p>
+    {% endfor %}
+</section>
+{% endblock %}

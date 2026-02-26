@@ -1,0 +1,1265 @@
+ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¿{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Student Portal - Sanction Tracker{% endblock %}</title>
+
+    <style>
+
+        :root {
+
+            --primary: #4f46e5;
+
+            --primary-light: #e0e7ff;
+
+            --secondary: #7c3aed;
+
+            --dark: #111827;
+
+            --gray-dark: #374151;
+
+            --gray: #6b7280;
+
+            --gray-light: #9ca3af;
+
+            --gray-extra-light: #f3f4f6;
+
+            --white: #fefefe;
+
+            --green: #10b981;
+
+            --orange: #f59e0b;
+
+            --red: #ef4444;
+
+        }
+
+
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+        }
+
+
+
+        body {
+
+            display: flex;
+
+            min-height: 100vh;
+
+            background-color: var(--gray-extra-light);
+
+            color: var(--dark);
+
+        }
+
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+
+        }
+
+
+
+        .sidebar {
+
+            width: 220px;
+
+            background: var(--white);
+
+            border-right: 1px solid #e5e7eb;
+
+            display: flex;
+
+            flex-direction: column;
+
+            position: fixed;
+
+            height: 100vh;
+
+            z-index: 50;
+
+        }
+
+
+
+        .sidebar-header {
+
+            padding: 24px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+        }
+
+
+
+        .sidebar-header h1 {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: var(--dark);
+
+            margin-bottom: 4px;
+
+        }
+
+
+
+        .sidebar-header p {
+
+            font-size: 14px;
+
+            color: var(--gray);
+
+            font-weight: 400;
+
+        }
+
+
+
+        .nav-section {
+
+            padding: 16px 0;
+
+        }
+
+
+
+        .nav-section h3 {
+
+            padding: 0 24px 12px 24px;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            color: var(--gray);
+
+            letter-spacing: 1px;
+
+            font-weight: 600;
+
+        }
+
+
+
+        .nav-item {
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 12px 24px;
+
+            color: var(--gray-dark);
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            transition: all 0.2s;
+
+            border-left: 4px solid transparent;
+
+        }
+
+
+
+        .nav-item:hover {
+
+            background-color: var(--primary-light);
+
+            color: var(--primary);
+
+            border-left-color: var(--primary);
+
+        }
+
+
+
+        .nav-item.active {
+
+            background-color: var(--primary-light);
+
+            color: var(--primary);
+
+            border-left-color: var(--primary);
+
+            font-weight: 600;
+
+        }
+
+
+
+        .nav-item i {
+
+            margin-right: 12px;
+
+            font-size: 18px;
+
+            width: 20px;
+
+            text-align: center;
+
+        }
+
+
+
+        .main-content {
+
+            flex: 1;
+
+            margin-left: 0;
+            padding: 16px 40px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        .top-bar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 8px;
+
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+        }
+
+
+
+        .page-title h2 {
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+            color: var(--dark);
+
+            margin-bottom: 4px;
+
+        }
+
+
+
+        .page-title p {
+
+            color: var(--gray);
+
+            font-size: 14px;
+
+        }
+
+
+
+        .logout-btn {
+
+            background: var(--white);
+
+            color: var(--gray-dark);
+
+            border: 1px solid #d1d5db;
+
+            padding: 8px 20px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            cursor: pointer;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            transition: all 0.2s;
+
+        }
+
+
+
+        .logout-btn:hover {
+
+            background: var(--gray-extra-light);
+
+            border-color: var(--gray-light);
+
+        }
+
+
+
+        .notification-bar {
+
+            border: 1px solid rgba(79, 70, 229, 0.25);
+
+            border-radius: 10px;
+
+            background: var(--white);
+
+            padding: 14px 18px;
+
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.08);
+
+        }
+
+
+
+        .notification {
+
+            font-size: 14px;
+
+            color: var(--dark);
+
+            line-height: 1.4;
+
+        }
+
+
+
+        .notification.error {
+
+            color: var(--red);
+
+        }
+
+
+
+        .notification.success {
+
+            color: var(--green);
+
+        }
+
+
+
+        .page-body {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 24px;
+
+        }
+
+
+
+        .welcome-banner {
+
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.06));
+
+            border: 1px solid rgba(79, 70, 229, 0.12);
+
+            color: var(--dark);
+
+            padding: 16px 20px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.06);
+
+        }
+
+
+
+        .welcome-banner .icon {
+
+            width: 44px;
+
+            height: 44px;
+
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+
+            color: white;
+
+            border-radius: 50%;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: 700;
+
+            font-size: 18px;
+
+        }
+
+
+
+        .welcome-banner .text {
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: var(--dark);
+
+        }
+
+
+
+        .dashboard-content {
+
+            display: grid;
+
+            gap: 24px;
+
+        }
+
+
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 20px;
+
+        }
+
+
+
+        .stat-card {
+
+            background: var(--white);
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+            border: 1px solid #e5e7eb;
+
+        }
+
+
+
+        .stat-title {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+            font-weight: 600;
+
+            margin-bottom: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+        }
+
+
+
+        .stat-value {
+
+            font-size: 34px;
+
+            font-weight: 700;
+
+            color: var(--dark);
+
+        }
+
+
+
+        .stat-meta {
+
+            font-size: 14px;
+
+            color: var(--gray-dark);
+
+            margin-top: 12px;
+
+            font-weight: 500;
+
+        }
+
+
+
+        .secondary-grid {
+
+            display: grid;
+
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+
+            gap: 24px;
+
+            align-items: stretch;
+
+        }
+
+
+
+        .chart-card,
+
+        .activity-card {
+
+            background: var(--white);
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+        }
+
+
+
+        .chart-card .section-title,
+
+        .activity-card .section-title {
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            color: var(--dark);
+
+            margin-bottom: 12px;
+
+        }
+
+
+
+        .chart-card .section-title p,
+
+        .activity-card .section-title p {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+            margin-top: 4px;
+
+            font-weight: 500;
+
+        }
+
+
+
+        .chart-wrapper {
+
+            margin-top: 18px;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 20px;
+
+            height: 200px;
+
+        }
+
+
+
+        .chart-bar {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 10px;
+
+            width: 60px;
+
+        }
+
+
+
+        .bar-value {
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: var(--dark);
+
+        }
+
+
+
+        .bar-track {
+
+            width: 100%;
+
+            flex: 1;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: center;
+
+            background: #f5f0ff;
+
+            border-radius: 12px;
+
+            padding-bottom: 10px;
+
+        }
+
+
+
+        .bar-fill {
+
+            width: 32px;
+
+            border-radius: 12px;
+
+            background: linear-gradient(180deg, var(--secondary), var(--primary));
+
+            display: inline-block;
+
+        }
+
+
+
+        .bar-label {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+        }
+
+
+
+        .activity-list {
+
+            list-style: none;
+
+            margin-top: 12px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+        }
+
+
+
+        .activity-list li {
+
+            display: flex;
+
+            gap: 16px;
+
+            align-items: flex-start;
+
+        }
+
+
+
+        .activity-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 12px;
+
+            background: rgba(99, 102, 241, 0.12);
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 20px;
+
+        }
+
+
+
+        .activity-icon i {
+
+            font-size: 20px;
+
+        }
+
+
+
+        .activity-title {
+
+            font-size: 15px;
+
+            color: var(--dark);
+
+            font-weight: 600;
+
+            margin-bottom: 4px;
+
+        }
+
+
+
+        .activity-meta {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+        }
+
+
+
+        .activity-empty {
+
+            padding: 24px 0;
+
+        }
+
+
+
+        .sanctions-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 20px;
+
+        }
+
+
+
+        .sanction-card {
+
+            background: var(--white);
+
+            border-radius: 18px;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 24px;
+
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+        }
+
+
+
+        .sanction-card h3 {
+
+            font-size: 22px;
+
+            color: var(--dark);
+
+            margin-bottom: 4px;
+
+        }
+
+
+
+        .issued-text {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+            font-weight: 600;
+
+        }
+
+
+
+        .card-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+
+        .status-badge {
+
+            padding: 6px 16px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+        }
+
+
+
+        .status-active {
+
+            background-color: rgba(239, 68, 68, 0.12);
+
+            color: var(--red);
+
+        }
+
+
+
+        .status-completed {
+
+            background-color: rgba(99, 102, 241, 0.12);
+
+            color: var(--secondary);
+
+        }
+
+
+
+        .progress-row {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+        }
+
+
+
+        .progress-track {
+
+            background: #f3f4f6;
+
+            border-radius: 999px;
+
+            height: 12px;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .progress-fill {
+
+            display: block;
+
+            height: 100%;
+
+            border-radius: 999px;
+
+            background: linear-gradient(180deg, var(--secondary), var(--primary));
+
+            transition: width 0.3s ease;
+
+        }
+
+
+
+        .progress-meta {
+
+            font-size: 13px;
+
+            color: var(--gray);
+
+            font-weight: 600;
+
+        }
+
+
+
+        .sanction-note {
+
+            font-size: 13px;
+
+            color: var(--gray-dark);
+
+        }
+
+
+
+        .footer {
+
+            margin-top: 10px;
+
+            padding-top: 16px;
+
+            border-top: 1px solid #e5e7eb;
+
+            text-align: center;
+
+            color: var(--gray);
+
+            font-size: 13px;
+
+        }
+
+
+
+        @media (max-width: 1024px) {
+
+            .secondary-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+
+                width: 70px;
+            }
+
+
+
+            .sidebar-header h1,
+
+            .sidebar-header p,
+
+            .nav-section h3,
+
+            .nav-item span {
+
+                display: none;
+
+            }
+
+
+
+            .nav-item {
+
+                justify-content: center;
+
+                padding: 16px;
+
+            }
+
+
+
+            .nav-item i {
+
+                margin-right: 0;
+
+                font-size: 20px;
+
+            }
+
+
+
+            .main-content {
+
+                margin-left: 70px;
+
+            }
+
+        }
+
+
+
+        .material-icons {
+
+            font-family: 'Material Icons';
+
+            font-weight: normal;
+
+            font-style: normal;
+
+            font-size: 24px;
+
+            line-height: 1;
+
+            letter-spacing: normal;
+
+            text-transform: none;
+
+            display: inline-block;
+
+            white-space: nowrap;
+
+            word-wrap: normal;
+
+            direction: ltr;
+
+            -webkit-font-feature-settings: 'liga';
+
+            font-feature-settings: 'liga';
+
+            -webkit-font-smoothing: antialiased;
+
+        }
+
+    </style>
+    {% block extra_css %}{% endblock %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <div class="sidebar-header">
+
+            <h1>Student Portal</h1>
+
+            <p>Sanction Tracker</p>
+
+        </div>
+
+        <div class="nav-section">
+
+            <h3>Main</h3>
+
+            <a href="{% url 'student_dashboard' %}" class="nav-item {% if active_section == 'dashboard' %}active{% endif %}">
+
+                <i class="material-icons">dashboard</i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+        </div>
+
+        <div class="nav-section">
+
+            <h3>My Space</h3>
+
+            <a href="{% url 'student_sanctions' %}" class="nav-item {% if active_section == 'sanctions' %}active{% endif %}">
+
+                <i class="material-icons">gavel</i>
+
+                <span>My Sanctions</span>
+
+            </a>
+
+            <a href="{% url 'student_service_hours' %}" class="nav-item {% if active_section == 'servicehours' %}active{% endif %}">
+
+                <i class="material-icons">schedule</i>
+
+                <span>My Service Hours</span>
+
+            </a>
+
+            <a href="{% url 'student_records' %}" class="nav-item {% if active_section == 'records' %}active{% endif %}">
+
+                <i class="material-icons">folder_shared</i>
+
+                <span>My Records</span>
+
+            </a>
+
+            <a href="{% url 'student_help_center' %}" class="nav-item {% if active_section == 'help' %}active{% endif %}">
+
+                <i class="material-icons">help_outline</i>
+
+                <span>Help Center</span>
+
+            </a>
+
+            <a href="{% url 'student_settings' %}" class="nav-item {% if active_section == 'settings' %}active{% endif %}">
+
+                <i class="material-icons">settings</i>
+
+                <span>Account Settings</span>
+
+            </a>
+
+        </div>
+
+        <div class="nav-section" style="margin-top: auto;">
+
+            <a href="{% url 'logout' %}" class="nav-item">
+
+                <i class="material-icons">logout</i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="main-content">
+
+        <div class="top-bar">
+
+            <div class="page-title">
+
+                <h2>{% block page_title %}Student Portal{% endblock %}</h2>
+
+                <p>{% block page_subtitle %}Track your sanctions and service hours.{% endblock %}</p>
+
+            </div>
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+
+                <i class="material-icons">logout</i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+        {% if messages %}
+
+        <div class="notification-bar">
+
+            {% for message in messages %}
+
+            <div class="notification {{ message.tags }}">
+
+                {{ message }}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+        <div class="page-body">
+
+            {% block page_body %}{% endblock %}
+
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2026 Sanction Tracker System. All rights reserved.</p>
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+
+            item.addEventListener('click', function () {
+
+                if (!this.classList.contains('active')) {
+
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+                    this.classList.add('active');
+
+                }
+
+            });
+
+        });
+
+
+
+        const logoutLinks = document.querySelectorAll('a[href$="logout"]');
+
+        logoutLinks.forEach(link => {
+
+            link.addEventListener('click', function (event) {
+
+                if (!confirm('Are you sure you want to log out?')) {
+
+                    event.preventDefault();
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>
+
+
+
+
+
+

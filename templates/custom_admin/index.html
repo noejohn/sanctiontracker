@@ -1,0 +1,75 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    .custom-admin-section {
+        margin: 20px 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+    }
+    
+    .custom-admin-section h2 {
+        margin-top: 0;
+        color: #417690;
+        border-bottom: 2px solid #417690;
+        padding-bottom: 10px;
+    }
+    
+    .admin-links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .admin-link-card {
+        padding: 15px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #417690;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-link-card:hover {
+        background-color: #e8f4f8;
+        border-color: #417690;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .admin-link-card h3 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+    }
+    
+    .admin-link-card p {
+        margin: 0;
+        font-size: 13px;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+  <div class="custom-admin-section">
+    <h2>{% trans 'Sanction Tracker Management' %}</h2>
+    <p>Quick access to admin functions:</p>
+    <div class="admin-links-grid">
+      {% for page in custom_admin_pages %}
+        <a href="{{ page.url }}" class="admin-link-card">
+          <h3>{{ page.name }}</h3>
+          <p>{{ page.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sanction System - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --panel-purple: #7a207f;
+            --button-pink: #d55ac8;
+            --button-pink-hover: #bf47b2;
+            --input-bg: #ededed;
+            --text-light: #ffffff;
+            --text-dark: #111111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #c5c5c5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page {
+            width: min(980px, 100vw);
+            min-height: min(640px, 100vh);
+            display: flex;
+            background: #ffffff;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            padding: 24px;
+        }
+
+        .logo {
+            width: min(320px, 82%);
+            height: auto;
+            object-fit: contain;
+        }
+
+        .right-panel {
+            flex: 1;
+            background: var(--panel-purple);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 38px 44px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: 0.5px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 600;
+            text-transform: lowercase;
+        }
+
+        .form-control {
+            width: 100%;
+            border: none;
+            background: var(--input-bg);
+            border-radius: 999px;
+            padding: 14px 18px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .alert-error {
+            background: #ffdede;
+            color: #680000;
+        }
+
+        .alert-success {
+            background: #dcffe4;
+            color: #085a15;
+        }
+
+        .login-button {
+            width: 78%;
+            display: block;
+            margin: 26px auto 0;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 16px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-light);
+            background: var(--button-pink);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            transition: background 0.2s ease;
+        }
+
+        .login-button:hover {
+            background: var(--button-pink-hover);
+        }
+
+        @media (max-width: 768px) {
+            .page {
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .left-panel {
+                min-height: 38vh;
+            }
+
+            .right-panel {
+                min-height: 62vh;
+                padding: 28px 24px;
+            }
+
+            .login-title {
+                font-size: 30px;
+                margin-bottom: 28px;
+            }
+
+            .login-button {
+                width: 100%;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="left-panel">
+            <img class="logo" src="{% static 'images/logo1.png' %}" alt="School logo">
+        </section>
+        <section class="right-panel">
+            <div class="login-card">
+                <h1 class="login-title">Student Sanction System</h1>
+
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="username">username:</label>
+                        <input type="text" id="username" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">password:</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

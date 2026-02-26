@@ -1,0 +1,66 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Student Dashboard - Sanction Tracker{% endblock %}
+
+{% block page_title %}Student Dashboard{% endblock %}
+{% block page_subtitle %}Track sanctions, service hours, and progress.{% endblock %}
+
+{% block page_body %}
+<div class="welcome-banner">
+    <div class="icon">{{ student_name|slice:":1"|default:"S" }}</div>
+    <div class="text">Welcome back, {{ student_name|default:"Student" }}!</div>
+</div>
+<div class="dashboard-content">
+    <div class="stats-grid">
+        {% for card in overview_cards %}
+        <div class="stat-card">
+            <div class="stat-title">{{ card.label }}</div>
+            <div class="stat-value">{{ card.value }}</div>
+            <div class="stat-meta" style="color: {{ card.color }};">{{ card.meta }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="secondary-grid">
+        <article class="chart-card">
+            <div class="section-title">
+                <div>Monthly Hours Progress</div>
+                <p>A breakdown of the hours you submitted each month.</p>
+            </div>
+            <div class="chart-wrapper">
+                {% for bar in monthly_hours %}
+                <div class="chart-bar">
+                    <span class="bar-value">{{ bar.hours }}h</span>
+                    <div class="bar-track">
+                        <span class="bar-fill" style="height: {{ bar.percentage }}%;"></span>
+                    </div>
+                    <span class="bar-label">{{ bar.month }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        <article class="activity-card">
+            <div class="section-title">
+                <div>Recent Activity</div>
+                <p>A log of your latest submissions or updates.</p>
+            </div>
+            <ul class="activity-list">
+                {% for activity in activity_feed %}
+                <li>
+                    <span class="activity-icon" style="color: {{ activity.color }};">
+                        <i class="material-icons">{{ activity.icon }}</i>
+                    </span>
+                    <div>
+                        <p class="activity-title">{{ activity.title }}</p>
+                        <p class="activity-meta">{{ activity.time }}</p>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="activity-empty">
+                    <p class="activity-meta">No recent activity recorded.</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </article>
+    </div>
+</div>
+{% endblock %}

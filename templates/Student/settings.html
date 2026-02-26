@@ -1,0 +1,122 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Account Settings - Sanction Tracker{% endblock %}
+
+{% block page_title %}Account Settings{% endblock %}
+{% block page_subtitle %}Securely update your password and sync the change to your profile.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-page-content {
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+    }
+
+    .settings-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 26px 30px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        max-width: 640px;
+        width: 100%;
+    }
+
+    .settings-card h3 {
+        margin: 0 0 6px;
+        font-size: 22px;
+    }
+
+    .settings-card p {
+        margin: 0 0 18px;
+        color: var(--gray);
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .form-field label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .form-field input {
+        border-radius: 12px;
+        border: 1px solid #cbd5f5;
+        padding: 14px;
+        font-size: 14px;
+        font-family: inherit;
+        background: #f8f9ff;
+        appearance: none;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: var(--secondary);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        display: inline-flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .submit-btn .material-icons {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        .settings-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_body %}
+<div class="settings-page-content">
+    <div class="settings-card">
+        <h3>Change Password</h3>
+        <p>Provide your current password to confirm the change, then enter a new password that meets the minimum length requirements.</p>
+        <form method="POST" action="{% url 'student_settings' %}">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="current-password">Current Password</label>
+                <input id="current-password" name="current_password" type="password" required>
+            </div>
+            <div class="form-field">
+                <label for="new-password">New Password</label>
+                <input id="new-password" name="new_password" type="password" minlength="8" required>
+            </div>
+            <div class="form-field">
+                <label for="confirm-password">Confirm New Password</label>
+                <input id="confirm-password" name="confirm_password" type="password" minlength="8" required>
+            </div>
+            <button class="submit-btn" type="submit">
+                <i class="material-icons">lock</i>
+                Save Password
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
